@@ -1,0 +1,19 @@
+/* App.css */
+.container {
+  display: flex;
+}
+
+.add-post {
+  width: 300px; /* Fixed width for sidebar */
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  background-color: #f4f4f4;
+}
+
+.post-list {
+  flex-grow: 1; /* Take up the remaining space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
