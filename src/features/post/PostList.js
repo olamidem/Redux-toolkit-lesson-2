@@ -1,6 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { selectAllPosts } from "./postSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPosts, selectAllPosts } from "./postSlice";
 import "./PostList.css";
 import PostAuthor from "./PostAuthor";
 import TimeAgo from "./TimeAgo";
@@ -8,6 +8,8 @@ import Reactions from "./Reactions";
 
 const PostList = () => {
   const posts = useSelector(selectAllPosts);
+  const dispatch = useDispatch();
+
 
   const sortedPosts = posts
     .slice()
