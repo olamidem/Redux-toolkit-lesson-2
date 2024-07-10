@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./PostForm.css";
-import { addPost } from "./postSlice";
+import { addNewPost } from "./postSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllUsers } from "../users/usersSlice";
 
@@ -10,6 +10,7 @@ const AddPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContect] = useState("");
   const [userId, setUserId] = useState("");
+  const [addRequestStatus, setAddRequestStatus] = useState("idle");
 
   const onTitleChanged = (e) => {
     setTitle(e.target.value);
@@ -23,17 +24,25 @@ const AddPost = () => {
     setContect(e.target.value);
   };
 
+  const canSave =
+    [title, content, userId].every(Boolean) && addRequestStatus === "idle";
+
   const onSavePostClicked = (e) => {
     e.preventDefault();
-    if (title && content) {
-      dispatch(addPost(title, content, userId));
-      setTitle("");
-      setContect("");
-      setUserId("");
+    if (canSave) {
+      try {
+        setAddRequestStatus("pending");
+        dispatch(addNewPost({ title, body: content, userId })).unwrap();
+        setTitle("");
+        setContect("");
+        setUserId("");
+      } catch (error) {
+        console.error("Failed to save the post", error);
+      } finally {
+        setAddRequestStatus("idle");
+      }
     }
   };
-
-  const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
 
   const userOptions = users.map((user) => (
     <option key={user.id} value={user.id}>
@@ -72,7 +81,7 @@ const AddPost = () => {
           value={content}
           onChange={onContentChanged}
         />
-        <button type="submit" onClick={onSavePostClicked} disabled={!canSave}>
+        <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
           Add Post
         </button>
       </form>
